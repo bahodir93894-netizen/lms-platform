@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { convexQuery, convexMutation } from "../convex.js";
+import { requireAuth } from "../middleware/auth.js";
+const r = Router();
+r.get("/assignment/:assignmentId", requireAuth, async (req, res, next) => { try { res.json(await convexQuery("submissions:listByAssignment", { assignmentId: req.params.assignmentId }, req.authToken)); } catch(e) { next(e); } });
+r.get("/mine/:assignmentId", async (req, res, next) => { try { res.json(await convexQuery("submissions:mySubmissions", { assignmentId: req.params.assignmentId }, req.authToken)); } catch(e) { next(e); } });
+r.post("/", requireAuth, async (req, res, next) => { try { const { assignmentId, textMd, fileStorageId } = req.body; const id = await convexMutation("submissions:submit", { assignmentId, textMd, fileStorageId }, req.authToken); res.status(201).json({ _id: id }); } catch(e) { next(e); } });
+r.post("/:id/grade", requireAuth, async (req, res, next) => { try { const { score, feedbackMd } = req.body; await convexMutation("submissions:grade", { submissionId: req.params.id, score, feedbackMd }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.post("/:id/return", requireAuth, async (req, res, next) => { try { await convexMutation("submissions:returnSubmission", { submissionId: req.params.id, feedbackMd: req.body.feedbackMd }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+export default r;
