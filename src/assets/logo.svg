@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="248" fill="oklch(0.38 0.12 265)" />
+
+  <!-- Graduation cap / mortarboard -->
+  <g transform="translate(256, 160)">
+    <path d="M-4,-50 L-120,10 L-96,28 L-96,28 L-96,28 L-40,-10 L0,20 L40,-10 L96,28 L96,28 L96,28 L120,10 L4,-50 Z"
+          fill="oklch(0.62 0.18 35)" stroke="white" stroke-width="3"/>
+    <path d="M0,20 L0,60" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="-30" cy="70" r="8" fill="white" opacity="0.9"/>
+    <circle cx="30" cy="70" r="8" fill="white" opacity="0.9"/>
+  </g>
+
+  <!-- Open book -->
+  <g transform="translate(256, 320)">
+    <path d="M-120,80 L-120,-40 Q-60,-60 0,-20 L0,60 Q-60,20 -120,40 Z"
+          fill="oklch(0.94 0.01 260)" stroke="white" stroke-width="3"/>
+    <path d="M120,80 L120,-40 Q60,-60 0,-20 L0,60 Q60,20 120,40 Z"
+          fill="oklch(0.955 0.006 260)" stroke="white" stroke-width="3"/>
+    <!-- Pages lines -->
+    <line x1="-80" y1="-15" x2="-80" y2="45" stroke="oklch(0.38 0.12 265 / 0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+    <line x1="-50" y1="-5" x2="-50" y2="50" stroke="oklch(0.38 0.12 265 / 0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+    <line x1="50" y1="-5" x2="50" y2="50" stroke="oklch(0.38 0.12 265 / 0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+    <line x1="80" y1="-15" x2="80" y2="45" stroke="oklch(0.38 0.12 265 / 0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+  </g>
+
+  <!-- Sparkle / star details -->
+  <circle cx="140" cy="180" r="4" fill="oklch(0.62 0.18 35 / 0.8)"/>
+  <circle cx="380" cy="200" r="3" fill="oklch(0.62 0.18 35 / 0.6)"/>
+  <circle cx="170" cy="350" r="3" fill="white" opacity="0.5"/>
+  <circle cx="360" cy="330" r="4" fill="white" opacity="0.4"/>
+</svg>
