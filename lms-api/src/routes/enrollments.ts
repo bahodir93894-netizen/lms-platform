@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { convexQuery, convexMutation } from "../convex.js";
+import { requireAuth } from "../middleware/auth.js";
+const r = Router();
+r.post("/:courseId", requireAuth, async (req, res, next) => { try { const id = await convexMutation("enrollments:enroll", { courseId: req.params.courseId }, req.authToken); res.status(201).json({ _id: id }); } catch(e) { next(e); } });
+r.delete("/:courseId", requireAuth, async (req, res, next) => { try { await convexMutation("enrollments:unenroll", { courseId: req.params.courseId }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.get("/:courseId/check", async (req, res, next) => { try { res.json({ enrolled: await convexQuery("enrollments:isEnrolled", { courseId: req.params.courseId }, req.authToken) }); } catch(e) { next(e); } });
+r.get("/:courseId/count", async (req, res, next) => { try { res.json({ count: await convexQuery("enrollments:count", { courseId: req.params.courseId }) }); } catch(e) { next(e); } });
+r.get("/:courseId/students", requireAuth, async (req, res, next) => { try { res.json(await convexQuery("enrollments:listStudents", { courseId: req.params.courseId }, req.authToken)); } catch(e) { next(e); } });
+export default r;
