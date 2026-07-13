@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { convexQuery, convexMutation } from "../convex.js";
+import { requireAuth } from "../middleware/auth.js";
+const r = Router();
+r.get("/platform", requireAuth, async (req, res, next) => { try { res.json(await convexQuery("analytics:getPlatformStats", {}, req.authToken)); } catch(e) { next(e); } });
+r.get("/users", requireAuth, async (req, res, next) => { try { res.json(await convexQuery("analytics:listAllUsers", {}, req.authToken)); } catch(e) { next(e); } });
+r.patch("/users/:userId/role", requireAuth, async (req, res, next) => { try { await convexMutation("analytics:updateUserRole", { userId: req.params.userId, role: req.body.role }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.delete("/users/:userId", requireAuth, async (req, res, next) => { try { await convexMutation("analytics:removeUser", { userId: req.params.userId }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.get("/courses", requireAuth, async (req, res, next) => { try { res.json(await convexQuery("analytics:listAllCourses", {}, req.authToken)); } catch(e) { next(e); } });
+r.get("/courses/:courseId/stats", requireAuth, async (req, res, next) => { try { res.json(await convexQuery("analytics:getCourseStats", { courseId: req.params.courseId }, req.authToken)); } catch(e) { next(e); } });
+export default r;
