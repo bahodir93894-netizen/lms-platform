@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { convexQuery, convexMutation } from "../convex.js";
+import { requireAuth } from "../middleware/auth.js";
+const r = Router();
+r.post("/", requireAuth, async (req, res, next) => { try { const { moduleId, title, type, contentMd } = req.body; const id = await convexMutation("lessons:create", { moduleId, title, type, contentMd }, req.authToken); res.status(201).json({ _id: id }); } catch(e) { next(e); } });
+r.patch("/:id", requireAuth, async (req, res, next) => { try { await convexMutation("lessons:update", { lessonId: req.params.id, ...req.body }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.delete("/:id", requireAuth, async (req, res, next) => { try { await convexMutation("lessons:remove", { lessonId: req.params.id }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.post("/:id/complete", requireAuth, async (req, res, next) => { try { await convexMutation("lessons:markComplete", { lessonId: req.params.id }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.get("/progress/:courseId", async (req, res, next) => { try { res.json(await convexQuery("lessons:getProgress", { courseId: req.params.courseId }, req.authToken)); } catch(e) { next(e); } });
+export default r;
