@@ -1,0 +1,55 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
+import { config } from "./config.js";
+import { swaggerSpec } from "./swagger.js";
+import { errorHandler, notFoundHandler } from "./middleware/error.js";
+import { optionalAuth } from "./middleware/auth.js";
+import coursesRouter from "./routes/courses.js";
+import modulesRouter from "./routes/modules.js";
+import lessonsRouter from "./routes/lessons.js";
+import enrollmentsRouter from "./routes/enrollments.js";
+import quizzesRouter from "./routes/quizzes.js";
+import assignmentsRouter from "./routes/assignments.js";
+import submissionsRouter from "./routes/submissions.js";
+import usersRouter from "./routes/users.js";
+import analyticsRouter from "./routes/analytics.js";
+import certificatesRouter from "./routes/certificates.js";
+import notificationsRouter from "./routes/notifications.js";
+import importsRouter from "./routes/imports.js";
+import materialsRouter from "./routes/materials.js";
+
+const app = express();
+app.use(helmet());
+app.use(cors({ origin: config.corsOrigins }));
+app.use(morgan(config.nodeEnv === "production" ? "combined" : "dev"));
+app.use(express.json({ limit: "10mb" }));
+app.use(optionalAuth);
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, { customCss: ".swagger-ui .topbar { display: none }" }));
+app.get("/docs.json", (req, res) => res.json(swaggerSpec));
+
+const a = config.apiPrefix;
+app.use(a + "/courses", coursesRouter);
+app.use(a + "/modules", modulesRouter);
+app.use(a + "/lessons", lessonsRouter);
+app.use(a + "/enrollments", enrollmentsRouter);
+app.use(a + "/quizzes", quizzesRouter);
+app.use(a + "/assignments", assignmentsRouter);
+app.use(a + "/submissions", submissionsRouter);
+app.use(a + "/users", usersRouter);
+app.use(a + "/analytics", analyticsRouter);
+app.use(a + "/certificates", certificatesRouter);
+app.use(a + "/notifications", notificationsRouter);
+app.use(a + "/imports", importsRouter);
+app.use(a + "/materials", materialsRouter);
+app.get(a + "/health", (req, res) => res.json({ status: "ok" }));
+
+app.use(notFoundHandler);
+app.use(errorHandler);
+app.listen(config.port, () => {
+  console.log("Server: http://localhost:" + config.port);
+  console.log("Docs:  http://localhost:" + config.port + "/docs");
+});
+export default app;
