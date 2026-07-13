@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { convexQuery, convexMutation } from "../convex.js";
+import { requireAuth } from "../middleware/auth.js";
+const r = Router();
+r.get("/course/:courseId", async (req, res, next) => { try { res.json(await convexQuery("modules:listByCourse", { courseId: req.params.courseId })); } catch(e) { next(e); } });
+r.post("/", requireAuth, async (req, res, next) => { try { const { courseId, title } = req.body; const id = await convexMutation("modules:create", { courseId, title }, req.authToken); res.status(201).json({ _id: id }); } catch(e) { next(e); } });
+r.patch("/:id", requireAuth, async (req, res, next) => { try { await convexMutation("modules:update", { moduleId: req.params.id, ...req.body }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.delete("/:id", requireAuth, async (req, res, next) => { try { await convexMutation("modules:remove", { moduleId: req.params.id }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.post("/reorder", requireAuth, async (req, res, next) => { try { await convexMutation("modules:reorder", { moduleIds: req.body.moduleIds }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+export default r;
