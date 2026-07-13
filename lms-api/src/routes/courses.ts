@@ -1,0 +1,13 @@
+import { Router } from "express";
+import { convexQuery, convexMutation } from "../convex.js";
+import { requireAuth } from "../middleware/auth.js";
+const r = Router();
+r.get("/", async (req, res, next) => { try { res.json(await convexQuery("courses:listPublished", {})); } catch(e) { next(e); } });
+r.get("/:slug", async (req, res, next) => { try { const c = await convexQuery("courses:getBySlug", { slug: req.params.slug }); if (!c) return res.status(404).json({ error: "Not Found" }); res.json(c); } catch(e) { next(e); } });
+r.get("/mine/teacher", async (req, res, next) => { try { res.json(await convexQuery("courses:myCourses", {}, req.authToken)); } catch(e) { next(e); } });
+r.get("/enrolled/mine", async (req, res, next) => { try { res.json(await convexQuery("courses:myEnrolledCourses", {}, req.authToken)); } catch(e) { next(e); } });
+r.post("/", requireAuth, async (req, res, next) => { try { const { title, slug, description } = req.body; const id = await convexMutation("courses:create", { title, slug, description }, req.authToken); res.status(201).json({ _id: id }); } catch(e) { next(e); } });
+r.patch("/:id", requireAuth, async (req, res, next) => { try { await convexMutation("courses:update", { courseId: req.params.id, ...req.body }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.delete("/:id", requireAuth, async (req, res, next) => { try { await convexMutation("courses:remove", { courseId: req.params.id }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+r.post("/:id/publish", requireAuth, async (req, res, next) => { try { await convexMutation("courses:togglePublish", { courseId: req.params.id }, req.authToken); res.json({ success: true }); } catch(e) { next(e); } });
+export default r;
